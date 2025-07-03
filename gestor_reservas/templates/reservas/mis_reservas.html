@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+
+{% block "page_content" %}
+
+  <h2>Mis reservas</h2>
+
+
+  {% if reservas %}
+    {% for reserva in reservas %}
+        <p>
+          Reserva a nombre de {{ reserva.user }}
+          para el {{ reserva.fecha_hora }} en {{ reserva.recurso }}.
+          <a class="btn btn-primary" href="{% url 'reserva:reserva_update' reserva.pk %}">Editar</a>
+          <a class="btn btn-primary" href="{% url 'reserva:reserva_delete' reserva.pk %}">Eliminar</a>
+        </p>
+      {% endfor %}
+  {% else %}
+        <p>No hay reservas hasta el momento, aprovecha la oportunidad!</p>
+  {% endif %}
+
+    <button><a href="{% url 'calendario' %}">Volver</a></button>
+
+{% endblock %}

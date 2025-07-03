@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+
+{% block "page_content" %}
+
+<h1>Reserva para el día {{ day }}-{{ month }}-{{ year }}</h1>
+
+{% if reservas %}
+  {% for reserva in reservas %}
+    <p>
+      Hay una reserva a nombre de {{ reserva.nombre }}
+      para el {{ reserva.fecha_hora }} en {{ reserva.recurso }}.
+    </p>
+  {% endfor %}
+{% else %}
+  <p>Todavía no hay reservas para este día!</p>
+
+{% endif %}
+
+
+<button><a href="{% url 'reserva:crear_reserva' year month day %}">Crear reserva</a></button>
+
+
+<button><a href="{% url 'calendario' %}">Volver</a></button>
+
+{% endblock %}

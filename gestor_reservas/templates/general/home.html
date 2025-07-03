@@ -1,0 +1,11 @@
+{% extends "layout.html" %}
+
+{% block "page_content" %}
+    <h1>Bienvenido a mi gestor de reservas!</h1>
+
+    {% if request.user.is_authenticated%}
+        <li><a href="{% url "calendario" %}">Haz tu reserva aqui</a></li>
+    {% endif %}
+
+
+{% endblock %}

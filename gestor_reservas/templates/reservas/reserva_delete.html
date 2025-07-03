@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+
+{% block "page_content" %}
+  <h2>Eliminar Reserva</h2>
+
+  <p>¿Estás seguro de que quieres eliminar esta reserva?</p>
+
+  <ul>
+    <li><strong>Usuario:</strong> {{ reserva.user }}</li>
+    <li><strong>Fecha y hora:</strong> {{ reserva.fecha_hora }}</li>
+    <li><strong>Recurso:</strong> {{ reserva.recurso }}</li>
+  </ul>
+
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Sí, eliminar</button>
+    <a href="{% url 'reserva:mis_reservas' %}" class="btn btn-secondary">Cancelar</a>
+  </form>
+
+{% endblock %}

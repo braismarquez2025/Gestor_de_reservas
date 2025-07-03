@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+
+{% block "page_content" %}
+
+<h1>Reserva para el día {{ day }}-{{ month }}-{{ year }}</h1>
+
+<h2>Crear nueva reserva</h2>
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Guardar reserva</button>
+</form>
+
+
+{% endblock %}
+
+

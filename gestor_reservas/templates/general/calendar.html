@@ -1,0 +1,143 @@
+{% extends "layout.html" %}
+
+{% block "page_content" %}
+
+{% csrf_token %}
+
+<div class="container">
+
+  <div id='calendar'></div>
+
+  <div class="modal fade" id="modalReserva" tabindex="-1" aria-labelledby="modalReservaLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form id="formReserva">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalReservaLabel">Crear Reserva</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label for="fechaReserva" class="form-label">Fecha y hora</label>
+              <input type="datetime-local" class="form-control" id="fechaReserva" name="fechaReserva" required>
+            </div>
+            <div class="mb-3">
+              <label for="recurso" class="form-label">Recurso</label>
+              <select class="form-select" id="recurso" name="recurso">
+                {% for recurso in recursos %}
+                  <option value="{{ recurso.id }}">{{ recurso.nombre }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-primary">Guardar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  
+  
+  
+    <a class="btn btn-primary" href="{% url 'reserva:mostrar_reservas' %}">Mostrar todas las reservas</a>
+
+    <a class="btn btn-primary" href="{% url 'reserva:mis_reservas' %}">Mis reservas</a>
+
+  <script>
+      var calendar;
+
+      document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('calendar');
+      
+        calendar = new FullCalendar.Calendar(calendarEl, {
+          themeSystem: 'bootstrap5',
+          initialView: 'dayGridMonth',
+          headerToolbar: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'dayGridMonth,dayGridWeek,dayGridDay'
+          },
+          events: '/reserva/api/reservas/',
+
+          dateClick: function(info) {
+            // info.dateStr = fecha clicada en formato "YYYY-MM-DD"
+            console.log("Has hecho clic en:", info.dateStr);
+            
+            // Aquí lanzamos el modal o redirección
+            abrirModalCrearReserva(info.dateStr);
+          }
+        });
+      
+        calendar.render();
+      });
+
+
+      function abrirModalCrearReserva(fecha) {
+        // Precarga la fecha clicada
+        document.getElementById('fechaReserva').value = fecha + "T09:00"; // hora por defecto
+        var myModal = new bootstrap.Modal(document.getElementById('modalReserva'));
+        myModal.show();
+      }
+
+      document.getElementById('formReserva').addEventListener('submit', function(e) {
+        e.preventDefault();
+      
+        var fechaHora = document.getElementById('fechaReserva').value;
+        const recursoId = parseInt(document.getElementById('recurso').value);
+
+        let fechaISO = fechaHora
+        if (fechaHora.length === 16) {
+          fechaISO += ":00";
+        }
+      
+        fetch('/reserva/api/reservas/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken'),
+          },
+          body: JSON.stringify({
+            fecha_hora: fechaISO,
+            recurso_id: recursoId
+          })
+        })
+        .then(response => {
+          return response.json().then(data => {
+              return data;
+          });
+      })
+        .then(data => {
+          alert(data.message);
+          calendar.refetchEvents();
+          bootstrap.Modal.getInstance(document.getElementById('modalReserva')).hide();
+        })
+        .catch(err => {
+          console.error(err);
+        });
+      });
+
+
+      function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+  </script>
+
+
+
+</container>
+
+{% endblock %}
