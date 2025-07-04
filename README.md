@@ -16,7 +16,7 @@ Este proyecto tiene como objetivo reservar recursos como pistas deportivas o sal
 ## Descripción general
 
 ### Captura de pantalla
-![](images\127-0-0-1-8000-calendar--07-04-2025_02_23_PM.png)
+![](./images/127-0-0-1-8000-calendar--07-04-2025_02_23_PM.png)
 
 
 ### Links
